@@ -1,7 +1,7 @@
 #pragma once
-#include "HttpConnection.h"
+#include "HttpClient.h"
 
-class Imageshack : private HttpConnection
+class Imageshack : private HttpClient
 {
 public:
 	Imageshack();

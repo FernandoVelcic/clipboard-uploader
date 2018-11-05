@@ -28,12 +28,6 @@
     <Filter Include="OperativeSystem\Windows">
       <UniqueIdentifier>{f32c6c10-840e-4af4-aa45-edd0fb1c0506}</UniqueIdentifier>
     </Filter>
-    <Filter Include="OperativeSystem\Windows\Winsock">
-      <UniqueIdentifier>{e77fcede-6363-43c8-ab05-ef08563fe9ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="OperativeSystem\Windows\WinTemp">
-      <UniqueIdentifier>{6aa49ed5-7f62-41c3-b464-42f8c02610f4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="OperativeSystem\Windows\Clipboard">
       <UniqueIdentifier>{64dfd9cd-0323-4cf8-88ea-e1b5cebdbcc1}</UniqueIdentifier>
     </Filter>
@@ -45,32 +39,23 @@
     <ClInclude Include="stdafx.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="Pastebin.h">
       <Filter>Upload\Pastebin</Filter>
     </ClInclude>
-    <ClInclude Include="Socket.h">
-      <Filter>OperativeSystem\Windows\Winsock</Filter>
-    </ClInclude>
     <ClInclude Include="Imageshack.h">
       <Filter>Upload\Imageshack</Filter>
-    </ClInclude>
-    <ClInclude Include="WinTemp.h">
-      <Filter>OperativeSystem\Windows\WinTemp</Filter>
     </ClInclude>
     <ClInclude Include="Clipboard.h">
       <Filter>OperativeSystem\Windows\Clipboard</Filter>
     </ClInclude>
-    <ClInclude Include="HttpConnection.h">
-      <Filter>Upload</Filter>
-    </ClInclude>
     <ClInclude Include="Temp.h">
       <Filter>Temp</Filter>
+    </ClInclude>
+    <ClInclude Include="HttpClient.h">
+      <Filter>Upload</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -80,26 +65,20 @@
     <ClCompile Include="Pastebin.cpp">
       <Filter>Upload\Pastebin</Filter>
     </ClCompile>
-    <ClCompile Include="Socket.cpp">
-      <Filter>OperativeSystem\Windows\Winsock</Filter>
-    </ClCompile>
     <ClCompile Include="Imageshack.cpp">
       <Filter>Upload\Imageshack</Filter>
     </ClCompile>
-    <ClCompile Include="WinTemp.cpp">
-      <Filter>OperativeSystem\Windows\WinTemp</Filter>
-    </ClCompile>
     <ClCompile Include="Clipboard.cpp">
       <Filter>OperativeSystem\Windows\Clipboard</Filter>
-    </ClCompile>
-    <ClCompile Include="HttpConnection.cpp">
-      <Filter>Upload</Filter>
     </ClCompile>
     <ClCompile Include="Temp.cpp">
       <Filter>Temp</Filter>
     </ClCompile>
     <ClCompile Include="ClipboardUploader.cpp">
       <Filter>Archivos de código fuente</Filter>
+    </ClCompile>
+    <ClCompile Include="HttpClient.cpp">
+      <Filter>Upload</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

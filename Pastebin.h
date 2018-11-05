@@ -1,7 +1,7 @@
 #pragma once
-#include "HttpConnection.h"
+#include "HttpClient.h"
 
-class Pastebin : private HttpConnection
+class Pastebin : private HttpClient
 {
 public:
 	Pastebin();

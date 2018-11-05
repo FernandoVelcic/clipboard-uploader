@@ -6,14 +6,17 @@
 #include "Temp.h"
 #include "Clipboard.h"
 
-Imageshack ImageShack;
-Pastebin PasteBin;
 
-CTemp Temp;
-Clipboard ClipBoard;
 
 void App()
 {
+	Clipboard ClipBoard;
+
+	Imageshack ImageShack;
+	Pastebin PasteBin;
+
+	CTemp Temp;
+
 	std::string link;
 
 	switch( ClipBoard.GetFormat() )

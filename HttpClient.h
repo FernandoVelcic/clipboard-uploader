@@ -1,18 +1,18 @@
 #pragma once
 
-class HttpConnection
+class HttpClient
 {
 protected:
-	std::string m_Header;
 	std::string m_PostData;
-	std::stringstream m_Packet;
+	std::string m_ContentType;
+	std::string m_Target;
 
 	char *m_Address;
 	unsigned short m_Port;
 
 protected:
-	HttpConnection();
-	~HttpConnection();
+	HttpClient();
+	~HttpClient();
 
 	std::string Upload();
 	

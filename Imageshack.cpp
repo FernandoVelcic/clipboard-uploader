@@ -1,15 +1,12 @@
 #include "stdafx.h"
 #include "Imageshack.h"
-#include "Socket.h"
 
 Imageshack::Imageshack()
 {
 	this->m_Address	= "www.imageshack.us";
 	this->m_Port		= 80;
-
-	this->m_Header = "POST /upload_api.php HTTP/1.1\r\n";
-	this->m_Header += "Host: " + std::string(this->m_Address) + std::string("\r\n");
-	this->m_Header += "Content-type: multipart/form-data, boundary=BO--UN--DA--RY----FI--LE\r\n";
+	this->m_Target = "/upload_api.php";
+	this->m_ContentType = "Content-type: multipart/form-data, boundary=BO--UN--DA--RY----FI--LE\r\n";
 
 	this->m_PostData = "--BO--UN--DA--RY----FI--LE\r\n";
 	this->m_PostData += "Content-Disposition: form-data; name=\"key\"\r\n\r\n" + std::string(IMAGESHACK_API_KEY) + std::string("\r\n");
@@ -59,14 +56,9 @@ std::string Imageshack::Upload(char *szFileName, unsigned char Type)
 	/*
 	/	Final m_Packet assembling.
 	*/
-	this->m_Packet << this->m_Header;
-	this->m_Packet << "Content-length: " << this->m_PostData.size() + file_upload.str().size() << "\r\n\r\n";
-	this->m_Packet << this->m_PostData;
-	this->m_Packet << file_upload.str();
+	this->m_PostData += file_upload.str();
 
-	std::string link = HttpConnection::Upload();
-
-	m_Packet.clear();
+	std::string link = HttpClient::Upload();
 
 	return link;
 }

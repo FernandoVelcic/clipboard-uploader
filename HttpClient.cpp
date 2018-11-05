@@ -1,6 +1,17 @@
 #include "stdafx.h"
-#include "HttpConnection.h"
-#include "Socket.h"
+#include "HttpClient.h"
+
+#include <boost/beast/core.hpp>
+#include <boost/beast/http.hpp>
+#include <boost/beast/version.hpp>
+#include <boost/asio/connect.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include <cstdlib>
+#include <iostream>
+#include <string>
+
+using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
+namespace http = boost::beast::http;    // from <boost/beast/http.hpp>
 
 const char SAFE[] =
 {
@@ -46,12 +57,12 @@ const char HEX2DEC[] =
 
 const char DEC2HEX[16 + 1] = "0123456789ABCDEF";
 
-HttpConnection::HttpConnection()
+HttpClient::HttpClient()
 {
 
 }
 
-std::string HttpConnection::LoadFileFromDisk(char *szFileName)
+std::string HttpClient::LoadFileFromDisk(char *szFileName)
 {
 	std::ifstream ClipboardFile(szFileName, std::ios::in | std::ios::binary);
 	std::string file_content;
@@ -75,32 +86,68 @@ std::string HttpConnection::LoadFileFromDisk(char *szFileName)
 	return file_content;
 }
 
-std::string HttpConnection::Upload()
+std::string HttpClient::Upload()
 {
-	Winsock_base *socket = new Winsock_base();
-	socket->CreateSocket(SOCK_IPv4, SOCK_TCP, IPPROTO_TCP);
+	auto const host = (const char *)this->m_Address;
+	auto const port = std::to_string(this->m_Port);
+	auto const target = this->m_Target.c_str();
+	int version = 11; //HTTP 1.1
 
-	if( !socket->Connect(this->m_Address, this->m_Port) )
-		std::cout << "Unable to connect.";
+	// The io_context is required for all I/O
+	boost::asio::io_context ioc;
 
-	socket->Send(this->m_Packet.str().c_str(), this->m_Packet.str().size());
+	// These objects perform our I/O
+	tcp::resolver resolver{ ioc };
+	tcp::socket socket{ ioc };
+	
+	// Look up the domain name
+	auto const results = resolver.resolve(host, port);
 
-	char *Buffer = new char[4096];
-	memset(Buffer, 0, 4096);
+	// Make the connection on the IP address we get from a lookup
+	boost::asio::connect(socket, results.begin(), results.end());
 
-	socket->Recv(Buffer, 4096);
+	// Set up an HTTP GET request message
+	http::request<http::string_body> req{ http::verb::post, target, version };
+	req.set(http::field::content_type, this->m_ContentType);
+	req.set(http::field::host, host);
+	req.set(http::field::user_agent, BOOST_BEAST_VERSION_STRING);
 
-	//std::cout << Buffer << std::endl;
+	req.body() = this->m_PostData;
+	req.prepare_payload();
 
-	std::string link = ParseResult(Buffer);
+	std::cout << req << std::endl;
 
-	delete socket;
-	delete[] Buffer;
+	// Send the HTTP request to the remote host
+	http::write(socket, req);
+
+	// This buffer is used for reading and must be persisted
+	boost::beast::flat_buffer buffer;
+
+	// Declare a container to hold the response
+	http::response<http::string_body> res;
+
+	// Receive the HTTP response
+	http::read(socket, buffer, res);
+
+	// Write the message to standard out
+	std::cout << res << std::endl;
+
+	// Gracefully close the socket
+	boost::system::error_code ec;
+	socket.shutdown(tcp::socket::shutdown_both, ec);
+
+	// not_connected happens sometimes
+	// so don't bother reporting it.
+	//
+	if (ec && ec != boost::system::errc::not_connected)
+		throw boost::system::system_error{ ec };
+
+	std::string link = ParseResult((char*)res.body().c_str());
 
 	return link;
 }
 
-std::string HttpConnection::UrlEncode(const std::string & sSrc)
+std::string HttpClient::UrlEncode(const std::string & sSrc)
 {
 	const unsigned char * pSrc = (const unsigned char *)sSrc.c_str();
 	const int SRC_LEN = sSrc.length();
@@ -126,7 +173,7 @@ std::string HttpConnection::UrlEncode(const std::string & sSrc)
 	return sResult;
 }
 
-std::string HttpConnection::UrlDecode(const std::string & sSrc)
+std::string HttpClient::UrlDecode(const std::string & sSrc)
 {
 	// Note from RFC1630:  "Sequences which start with a percent sign
 	// but are not followed by two hexadecimal characters (0-9, A-F) are reserved
@@ -165,7 +212,7 @@ std::string HttpConnection::UrlDecode(const std::string & sSrc)
 	return sResult;
 }
 
-HttpConnection::~HttpConnection()
+HttpClient::~HttpClient()
 {
 
 }

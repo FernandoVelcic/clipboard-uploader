@@ -1,15 +1,12 @@
 #include "stdafx.h"
 #include "Pastebin.h"
-#include "Socket.h"
 
 Pastebin::Pastebin()
 {
 	this->m_Address	= "www.pastebin.com";
 	this->m_Port		= 80;
-
-	this->m_Header = "POST /api/api_post.php HTTP/1.1\r\n";
-	this->m_Header += "Host: " + std::string(this->m_Address) + std::string("\r\n");
-	this->m_Header += "Content-type: application/x-www-form-urlencoded; charset=utf-8\r\n";
+	this->m_Target = "/api/api_post.php";
+	this->m_ContentType = "application/x-www-form-urlencoded; charset=utf-8";
 
 	this->m_PostData = "api_dev_key=" + std::string(PASTEBIN_API_KEY);
 	this->m_PostData += "&api_option=paste&api_paste_private=1";
@@ -26,14 +23,9 @@ std::string Pastebin::Upload(char *lpszTitle, char *lpszContent)
 	/*
 	/	Final m_Packet assembling.
 	*/
-	this->m_Packet << this->m_Header;
-	this->m_Packet << "Content-length: " << m_PostData.size()+upload_text.str().size() << "\r\n\r\n";
-	this->m_Packet << this->m_PostData;
-	this->m_Packet << upload_text.str();
+	this->m_PostData += upload_text.str();
 
-	std::string link = HttpConnection::Upload();
-
-	m_Packet.clear();
+	std::string link = HttpClient::Upload();
 
 	return link;
 }
@@ -97,29 +89,14 @@ std::string Pastebin::Upload(char *szFileName, char *lpszTitle, unsigned char Ty
 	/*
 	/	Final m_Packet assembling.
 	*/
-	this->m_Packet << this->m_Header;
-	this->m_Packet << "Content-length: " << m_PostData.size()+upload_text.str().size() << "\r\n\r\n";
-	this->m_Packet << this->m_PostData;
-	this->m_Packet << upload_text.str();
-
-	std::string link = HttpConnection::Upload();
-
-	m_Packet.clear();
+	std::string link = HttpClient::Upload();
 
 	return link;
 }
 
 std::string Pastebin::ParseResult(char *Buffer)
 {
-	std::string link = Buffer;
-	size_t pos; size_t pos2;
-
-	pos = link.find("1d\r\n") + strlen("1d\r\n");
-	pos2 = link.find("\r\n");
-
-	link = link.substr(pos, pos2-pos);
-
-	return link;
+	return Buffer;
 }
 
 Pastebin::~Pastebin()
