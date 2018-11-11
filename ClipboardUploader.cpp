@@ -22,10 +22,9 @@ void App()
 	switch( ClipBoard.GetFormat() )
 	{
 	case CF_TEXT:
+	case CF_UNICODETEXT:
 		link = PasteBin.Upload("unknown", ClipBoard.GetText());
 		ClipBoard.SetText(link.c_str());
-		break;
-	case CF_UNICODETEXT:
 		break;
 	
 	case CF_DIB:

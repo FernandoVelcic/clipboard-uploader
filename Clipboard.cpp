@@ -1,63 +1,26 @@
 #include "stdafx.h"
 #include "Clipboard.h"
+#include "third_party/clip/clip.h"
 
-Clipboard::Clipboard()
+
+std::string Clipboard::GetText()
 {
-	
-}
+	std::string text;
+	clip::get_text(text);
 
-Clipboard::~Clipboard()
-{
-
-}
-
-void Clipboard::Open()
-{
-	OpenClipboard(NULL);
-}
-
-void Clipboard::Close()
-{
-	CloseClipboard();
-}
-
-void Clipboard::Clear()
-{
-	EmptyClipboard();
-}
-
-char* Clipboard::GetText()
-{
-	Open();
-	HANDLE hClipboard = GetClipboardData(CF_TEXT);
-	Close();
-
-	m_szText = (char*)hClipboard;
-
-	return m_szText;
+	return text;
 }
 
 void Clipboard::SetText(const char *szText)
 {
-	Open();
-	Clear();
-
-	HGLOBAL hMem = GlobalAlloc(GMEM_DDESHARE, strlen(szText)+1);
-	char *buffer;
-   
-	buffer = (char*)GlobalLock(hMem);
-	strcpy(buffer, szText);
-	GlobalUnlock(hMem);
-
-	SetClipboardData(CF_TEXT, hMem);
-	Close();
+	clip::set_text(szText);
 }
 
 void Clipboard::SaveImage(char *szFileName)
 {
-	Open();
+	OpenClipboard(NULL);
 	HBITMAP hBitmap = (HBITMAP)GetClipboardData(CF_BITMAP);
-	Close();
+	CloseClipboard();
 
 	CImage cImage;
 
@@ -67,9 +30,9 @@ void Clipboard::SaveImage(char *szFileName)
 
 char* Clipboard::GetFileDirectory()
 {
-	Open();
+	OpenClipboard(NULL);
 	HANDLE hData = GetClipboardData(CF_HDROP);
-	Close();
+	CloseClipboard();
 	
 	if( DragQueryFile((HDROP)hData, 0xFFFFFFFF, NULL, 0) == 1 )
 	{
@@ -83,7 +46,7 @@ char* Clipboard::GetFileDirectory()
 
 unsigned int Clipboard::GetFormat()
 {
-	Open();
+	OpenClipboard(NULL);
 
 	if( IsClipboardFormatAvailable(CF_TEXT) )
 		return CF_TEXT;
@@ -94,7 +57,7 @@ unsigned int Clipboard::GetFormat()
 	else if( IsClipboardFormatAvailable(CF_HDROP) )
 		return CF_HDROP;
 
-	Close();
+	CloseClipboard();
 
 	return 0;
 }

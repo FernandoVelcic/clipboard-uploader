@@ -13,12 +13,12 @@ Pastebin::Pastebin()
 	//&api_user_key=
 }
 
-std::string Pastebin::Upload(char *lpszTitle, char *lpszContent)
+std::string Pastebin::Upload(char *lpszTitle, std::string content)
 {
 	std::stringstream upload_text;
 
 	upload_text << "&api_paste_name=" << lpszTitle;
-	upload_text << "&api_paste_code=" << UrlEncode(lpszContent);
+	upload_text << "&api_paste_code=" << UrlEncode(content);
 
 	/*
 	/	Final m_Packet assembling.
