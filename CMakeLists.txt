@@ -17,7 +17,7 @@ file(GLOB clipboard-uploader_SRC
     "*.cpp"
 )
 
-find_package(Boost COMPONENTS system date_time REQUIRED)
+find_package(Boost COMPONENTS system date_time program_options log REQUIRED)
 
 if(Boost_FOUND)
 	message(STATUS "Boost include dir: " ${Boost_INCLUDE_DIRS})

@@ -1,11 +1,18 @@
 #include "stdafx.h"
 
+#include <boost/log/core.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/program_options.hpp>
+#include <boost/log/expressions.hpp>
+
 #include "Imageshack.h"
 #include "Pastebin.h"
 
 #include "Temp.h"
 #include "Clipboard.h"
+#include "params.h"
 
+params p;
 
 
 void App()
@@ -104,9 +111,31 @@ void App()
 	}
 }
 
-int _tmain(int argc, _TCHAR* argv[])
+
+int main(int argc, char* argv[])
 {
-	//ShowWindow(GetConsoleWindow(), SW_HIDE);
+	//Command line parameters
+	boost::program_options::options_description desc("Allowed options");
+	desc.add_options()
+		("help", "produce help message")
+
+		("verbose,v", boost::program_options::bool_switch(&p.verboseMode), "set log level to trace");
+
+	boost::program_options::variables_map vm;
+	boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
+	boost::program_options::notify(vm);
+
+	if (vm.count("help")) {
+		std::cout << desc << std::endl;
+		return 1;
+	}
+
+	//Logs
+	boost::log::core::get()->set_filter
+	(
+		boost::log::trivial::severity >= ((p.verboseMode) ? boost::log::trivial::trace : boost::log::trivial::debug)
+	);
+
 	App();
 
 	return 0;
