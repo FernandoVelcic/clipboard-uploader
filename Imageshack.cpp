@@ -6,7 +6,7 @@ Imageshack::Imageshack()
 	this->m_Address	= "www.imageshack.us";
 	this->m_Port		= 80;
 	this->m_Target = "/upload_api.php";
-	this->m_ContentType = "Content-type: multipart/form-data, boundary=BO--UN--DA--RY----FI--LE\r\n";
+	this->m_ContentType = "multipart/form-data, boundary=BO--UN--DA--RY----FI--LE";
 
 	this->m_PostData = "--BO--UN--DA--RY----FI--LE\r\n";
 	this->m_PostData += "Content-Disposition: form-data; name=\"key\"\r\n\r\n" + std::string(IMAGESHACK_API_KEY) + std::string("\r\n");
