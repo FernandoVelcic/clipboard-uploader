@@ -13,7 +13,11 @@ CTemp::~CTemp(void)
 
 void CTemp::Create(void)
 {
+#ifdef WIN32
 	tmpnam_s(FileName);
+#else
+	tmpnam(FileName);
+#endif
 }
 
 void CTemp::Destroy(void)

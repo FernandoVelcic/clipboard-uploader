@@ -18,6 +18,7 @@ void Clipboard::SetText(const char *szText)
 
 void Clipboard::SaveImage(char *szFileName)
 {
+#ifdef WIN32
 	OpenClipboard(NULL);
 	HBITMAP hBitmap = (HBITMAP)GetClipboardData(CF_BITMAP);
 	CloseClipboard();
@@ -26,10 +27,12 @@ void Clipboard::SaveImage(char *szFileName)
 
 	cImage.Attach(hBitmap);
 	cImage.Save(szFileName, Gdiplus::ImageFormatJPEG);
+#endif
 }
 
 char* Clipboard::GetFileDirectory()
 {
+#ifdef WIN32
 	OpenClipboard(NULL);
 	HANDLE hData = GetClipboardData(CF_HDROP);
 	CloseClipboard();
@@ -41,11 +44,14 @@ char* Clipboard::GetFileDirectory()
 		return m_szFileName;
 	}
 
+#endif
+
 	return NULL;
 }
 
 unsigned int Clipboard::GetFormat()
 {
+#ifdef WIN32
 	OpenClipboard(NULL);
 
 	if( IsClipboardFormatAvailable(CF_TEXT) )
@@ -58,6 +64,7 @@ unsigned int Clipboard::GetFormat()
 		return CF_HDROP;
 
 	CloseClipboard();
+#endif
 
 	return 0;
 }

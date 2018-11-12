@@ -1,5 +1,13 @@
 #pragma once
 
+#ifndef WIN32
+#define MAX_PATH 255
+#define CF_TEXT 0
+#define CF_UNICODETEXT 1
+#define CF_DIB 2
+#define CF_HDROP 3
+#endif
+
 class Clipboard
 {
 private:
