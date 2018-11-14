@@ -13,7 +13,7 @@ CTemp::~CTemp(void)
 
 void CTemp::Create(void)
 {
-#ifdef WIN32
+#ifdef _MSC_VER
 	tmpnam_s(FileName);
 #else
 	tmpnam(FileName);

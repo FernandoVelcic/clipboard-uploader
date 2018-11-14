@@ -2,6 +2,12 @@
 #include "Clipboard.h"
 #include "third_party/clip/clip.h"
 
+#ifdef _MSC_VER
+#include <Windows.h>
+#include <atlimage.h>
+#include <Gdiplusimaging.h>
+#endif
+
 
 std::string Clipboard::GetText()
 {
@@ -18,7 +24,7 @@ void Clipboard::SetText(const char *szText)
 
 void Clipboard::SaveImage(char *szFileName)
 {
-#ifdef WIN32
+#ifdef _MSC_VER
 	OpenClipboard(NULL);
 	HBITMAP hBitmap = (HBITMAP)GetClipboardData(CF_BITMAP);
 	CloseClipboard();
@@ -32,7 +38,7 @@ void Clipboard::SaveImage(char *szFileName)
 
 char* Clipboard::GetFileDirectory()
 {
-#ifdef WIN32
+#ifdef _MSC_VER
 	OpenClipboard(NULL);
 	HANDLE hData = GetClipboardData(CF_HDROP);
 	CloseClipboard();
@@ -51,20 +57,19 @@ char* Clipboard::GetFileDirectory()
 
 unsigned int Clipboard::GetFormat()
 {
-#ifdef WIN32
+#ifdef _MSC_VER
 	OpenClipboard(NULL);
 
-	if( IsClipboardFormatAvailable(CF_TEXT) )
-		return CF_TEXT;
-	else if( IsClipboardFormatAvailable(CF_UNICODETEXT) )
-		return CF_UNICODETEXT;
-	else if( IsClipboardFormatAvailable(CF_DIB) )
-		return CF_DIB;
-	else if( IsClipboardFormatAvailable(CF_HDROP) )
-		return CF_HDROP;
+	if( IsClipboardFormatAvailable(CF_HDROP) )
+		return CT_HDROP;
 
 	CloseClipboard();
 #endif
+
+	if (clip::has(clip::text_format()))
+		return CT_TEXT;
+	else if (clip::has(clip::image_format()))
+		return CT_DIB;
 
 	return 0;
 }

@@ -28,13 +28,12 @@ void App()
 
 	switch( ClipBoard.GetFormat() )
 	{
-	case CF_TEXT:
-	case CF_UNICODETEXT:
+	case CT_TEXT:
 		link = PasteBin.Upload("unknown", ClipBoard.GetText());
 		ClipBoard.SetText(link.c_str());
 		break;
 	
-	case CF_DIB:
+	case CT_DIB:
 		Temp.Create();
 
 		ClipBoard.SaveImage(Temp.GetFileName());
@@ -45,7 +44,7 @@ void App()
 		Temp.Destroy();
 		break;
 
-	case CF_HDROP:
+	case CT_HDROP:
 		char *szFileName = ClipBoard.GetFileDirectory();
 		std::string FileName = szFileName;
 

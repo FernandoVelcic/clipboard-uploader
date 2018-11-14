@@ -1,17 +1,15 @@
 #pragma once
 
-#ifndef WIN32
-#define MAX_PATH 255
-#define CF_TEXT 0
-#define CF_UNICODETEXT 1
-#define CF_DIB 2
-#define CF_HDROP 3
-#endif
+enum ClipboardType {
+	CT_TEXT,
+	CT_DIB,
+	CT_HDROP
+};
 
 class Clipboard
 {
 private:
-	char m_szFileName[MAX_PATH];
+	char m_szFileName[255];
 
 public:
 	unsigned int GetFormat();
