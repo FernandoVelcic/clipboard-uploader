@@ -13,11 +13,11 @@ Pastebin::Pastebin()
 	//&api_user_key=
 }
 
-std::string Pastebin::Upload(char *lpszTitle, std::string content)
+std::string Pastebin::Upload(std::string title, std::string content)
 {
 	std::stringstream upload_text;
 
-	upload_text << "&api_paste_name=" << lpszTitle;
+	upload_text << "&api_paste_name=" << title;
 	upload_text << "&api_paste_code=" << UrlEncode(content);
 
 	/*
@@ -30,68 +30,9 @@ std::string Pastebin::Upload(char *lpszTitle, std::string content)
 	return link;
 }
 
-std::string Pastebin::Upload(char *szFileName, char *lpszTitle, unsigned char Type)
+std::string Pastebin::Upload(std::string fileName)
 {
-	std::stringstream upload_text;
-
-	upload_text << "&api_paste_name=" << lpszTitle;
-	upload_text << "&api_paste_code=" << UrlEncode( LoadFileFromDisk(szFileName) );
-	
-	upload_text << "&api_paste_format=";
-
-	switch(Type)
-	{
-	case FILE_CPP:
-		upload_text << "cpp";
-		break;
-	case FILE_OBJC:
-		upload_text << "objc";
-		break;
-	case FILE_ASM:
-		upload_text << "asm";
-		break;
-	case FILE_PHP:
-		upload_text << "php";
-		break;
-	case FILE_CSHARP:
-		upload_text << "csharp";
-		break;
-	case FILE_JAVA:
-		upload_text << "java";
-		break;
-	case FILE_VB:
-		upload_text << "vb";
-		break;
-	case FILE_CSS:
-		upload_text << "css";
-		break;
-	case FILE_HTML:
-		upload_text << "html5";
-		break;
-	case FILE_JS:
-		upload_text << "javascript";
-		break;
-
-	case FILE_TEXT:
-		upload_text << "none";
-		break;
-	case FILE_INI:
-		upload_text << "ini";
-		break;
-	case FILE_XML:
-		upload_text << "xml";
-		break;
-	case FILE_LUA:
-		upload_text << "lua";
-		break;
-	}
-
-	/*
-	/	Final m_Packet assembling.
-	*/
-	std::string link = HttpClient::Upload();
-
-	return link;
+	return this->Upload(fileName, LoadFileFromDisk(fileName));
 }
 
 std::string Pastebin::ParseResult(char *Buffer)

@@ -7,6 +7,6 @@ public:
 	Imageshack();
 	~Imageshack();
 
-	std::string Upload(char *szFileName, unsigned char Type);
+	std::string Upload(std::string fileName, unsigned char Type);
 	std::string ParseResult(char *Buffer);
 };

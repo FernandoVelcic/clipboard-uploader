@@ -7,7 +7,7 @@ protected:
 	std::string m_ContentType;
 	std::string m_Target;
 
-	char *m_Address;
+	std::string m_Address;
 	unsigned short m_Port;
 
 protected:
@@ -19,7 +19,7 @@ protected:
 	std::string UrlEncode(const std::string & sSrc);
 	std::string UrlDecode(const std::string & sSrc);
 
-	std::string LoadFileFromDisk(char *szFileName);
+	std::string LoadFileFromDisk(std::string fileName);
 
 	virtual std::string ParseResult(char *Buffer) = 0;
 };

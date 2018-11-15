@@ -62,9 +62,9 @@ HttpClient::HttpClient()
 
 }
 
-std::string HttpClient::LoadFileFromDisk(char *szFileName)
+std::string HttpClient::LoadFileFromDisk(std::string fileName)
 {
-	std::ifstream ClipboardFile(szFileName, std::ios::in | std::ios::binary);
+	std::ifstream ClipboardFile(fileName, std::ios::in | std::ios::binary);
 	std::string file_content;
 
 	if( ClipboardFile.is_open() )
@@ -88,7 +88,7 @@ std::string HttpClient::LoadFileFromDisk(char *szFileName)
 
 std::string HttpClient::Upload()
 {
-	auto const host = (const char *)this->m_Address;
+	auto const host = this->m_Address;
 	auto const port = std::to_string(this->m_Port);
 	auto const target = this->m_Target.c_str();
 	int version = 11; //HTTP 1.1

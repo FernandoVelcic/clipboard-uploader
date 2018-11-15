@@ -7,8 +7,8 @@ public:
 	Pastebin();
 	~Pastebin();
 
-	std::string Upload(char *lpszTitle, std::string content);
-	std::string Upload(char *szFileName, char *lpszTitle, unsigned char Type);
+	std::string Upload(std::string title, std::string content);
+	std::string Upload(std::string fileName);
 
 	std::string ParseResult(char *Buffer);
 };

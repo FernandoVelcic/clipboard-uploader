@@ -16,7 +16,7 @@ Imageshack::Imageshack()
 	this->m_PostData += "--BO--UN--DA--RY----FI--LE\r\n";
 }
 
-std::string Imageshack::Upload(char *szFileName, unsigned char Type)
+std::string Imageshack::Upload(std::string fileName, unsigned char Type)
 {
 	std::stringstream file_upload;
 
@@ -48,7 +48,7 @@ std::string Imageshack::Upload(char *szFileName, unsigned char Type)
 	/*
 	/	Read image from disk.
 	*/
-	file_upload << LoadFileFromDisk(szFileName);
+	file_upload << LoadFileFromDisk(fileName);
 
 	file_upload << "\r\n";
 	file_upload << "--BO--UN--DA--RY----FI--LE--\r\n";
