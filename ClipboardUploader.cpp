@@ -5,11 +5,18 @@
 #include <boost/program_options.hpp>
 #include <boost/log/expressions.hpp>
 
+#include "third_party/clip/clip.h"
+
+#ifdef _MSC_VER
+#include <Windows.h>
+#include <atlimage.h>
+#include <Gdiplusimaging.h>
+#endif
+
 #include "Imageshack.h"
 #include "Pastebin.h"
 
 #include "Temp.h"
-#include "Clipboard.h"
 #include "params.h"
 
 params p;
@@ -17,8 +24,6 @@ params p;
 
 void App()
 {
-	Clipboard ClipBoard;
-
 	Imageshack ImageShack;
 	Pastebin PasteBin;
 
@@ -26,26 +31,9 @@ void App()
 
 	std::string link;
 
-	switch( ClipBoard.GetFormat() )
-	{
-	case CT_TEXT:
-		link = PasteBin.Upload("unknown", ClipBoard.GetText());
-		ClipBoard.SetText(link.c_str());
-		break;
-	
-	case CT_DIB:
-		Temp.Create();
-
-		ClipBoard.SaveImage(Temp.GetFileName());
-		link = ImageShack.Upload(Temp.GetFileName(), FILE_JPEG);
-
-		ClipBoard.SetText(link.c_str());
-
-		Temp.Destroy();
-		break;
-
-	case CT_HDROP:
-		std::string fileName = ClipBoard.GetFileDirectory();
+	if (clip::has(clip::file_format())) {
+		std::string fileName;
+		clip::get_file(fileName);
 
 		int pos = fileName.find_last_of(".");
 		std::string fileExtension = fileName.substr(pos+1);
@@ -104,8 +92,33 @@ void App()
 			return;
 		}
 
-		ClipBoard.SetText(link.c_str());
-		break;
+		clip::set_text(link);
+	}
+	else if (clip::has(clip::text_format())) {
+		std::string text;
+		clip::get_text(text);
+		link = PasteBin.Upload("unknown", text);
+		clip::set_text(link);
+	}
+	else if (clip::has(clip::image_format())) {
+		Temp.Create();
+
+#ifdef _MSC_VER
+		OpenClipboard(NULL);
+		HBITMAP hBitmap = (HBITMAP)GetClipboardData(CF_BITMAP);
+		CloseClipboard();
+
+		CImage cImage;
+
+		cImage.Attach(hBitmap);
+		cImage.Save(Temp.GetFileName(), Gdiplus::ImageFormatJPEG);
+#endif
+
+		link = ImageShack.Upload(Temp.GetFileName(), FILE_JPEG);
+
+		clip::set_text(link);
+
+		Temp.Destroy();
 	}
 }
 
