@@ -17,7 +17,7 @@ public:
 	std::string GetText();
 	void SetText(const char *szText);
 
-	char* GetFileDirectory();
+	std::string GetFileDirectory();
 
 	void SaveImage(char *szFileName);
 };
